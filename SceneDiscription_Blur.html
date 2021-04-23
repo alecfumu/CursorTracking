@@ -5,11 +5,13 @@
     <title>Scene Discription_Blur</title>
 </head>
 <body>
-
+<!-- Loading packages -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
 
+<!-- How and when divs/images/textboxes are displayed -->
 <style>
+    /*Consent Form*/
     .consentDIV{
         width:75%;
         margin: 0 auto;
@@ -21,7 +23,8 @@
         margin-right: auto;
         text-align: center;
     }
-    .intro{
+    /*First page of instructions (example of task)*/
+    .intro1{
         width:75%;
         margin: 0 auto;
         background-color: beige;
@@ -32,6 +35,19 @@
         margin-right: auto;
         text-align: center;
     }
+    /*Second page of instructions (expailing catch trials)*/
+    .intro2{
+        width:75%;
+        margin: 0 auto;
+        background-color: beige;
+        border: 5px solid red;
+        font-size:14pt;
+        display: none;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+    /*Trial divs (main body of experiment)*/
     .trialDiv{
         background-color:beige;
         padding-top:2%;
@@ -39,11 +55,12 @@
         width: 90%;
         margin: 0 auto;
         border: 2px solid gray;
-        display: none;
         font-size:14pt; 
         text-align: center;
+        display: none;
     }
-    /* Image is not a standard size, but rather takes up 50% of the trial Div (which takes up 90% of entire available screen) */
+    /*Image is not a standard size, but rather takes up 50% of the trial Div (which takes up 90% of entire available screen) */
+    /*This means that we have to track image dimensions (img_dim) to see pixel width and length for each participant*/
     .image{
         width: 10cm;
         height: 10cm;
@@ -52,98 +69,101 @@
         margin-right: auto;
         cursor: crosshair;
     }
+    /*How buttons are displayed*/
     .button{   
         display: block;
         margin-left: auto;
         margin-right: auto;
     }
+    /*Button to begin experiment*/
     #beginButton{   
         display: block;
         margin-left: auto;
         margin-right: auto;
     }
+    /*Text box where participants type responses*/
     .question{   
         display: block;
         margin-left: auto;
         margin-right: auto;
     }
-    /* 'Hidden' variables which participant does not see, but MTurk tracks */
+    /* 'Hidden' variables (display:none) which participant does not see, but MTurk tracks */
     .coor{
         display: none;
     }
     .img_src{
         display:none;
     }
+    .img_dim{
+        display:none;
+    }
+
     /* Special instructions for catch trials */
     .instructions_catch{
         display:none;
     }
-    #LTimg{
-        display:none;
-        cursor: default;
-    }
-    .LTbutton{
-        display:none;
-        text-align:center;
-    }
-    .LTmem{
-        display:none;
-    }
+    /*Displays "Trial x/50"*/
     #progress{
         font-size: 10pt;
         text-align:center;
         display:none;
     }
-    #LTprogress{
-        font-size: 10pt;
-        text-align:center;
+    /*Creates blurring mask with center unblurred*/
+    #STimg{
+        -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 0.9) 10%, rgba(0, 0, 0, 0.05) 11%);
+        -webkit-mask-size: 300% 300%;
+        -webkit-mask-repeat: no-repeat;
+    }
+    /*Creates blurring mask for the example image (intro1 div)*/
+    #Testimg{
+        -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 0.9) 10%, rgba(0, 0, 0, 0.05) 11%);
+        -webkit-mask-size: 300% 300%;
+        -webkit-mask-repeat: no-repeat;
+    }
+    /*More hidden variables*/
+    .responseTime{
         display:none;
     }
-    #STimg{
-        -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 0.9) 25%, rgba(0, 0, 0, 0.05) 30%);
-        -webkit-mask-size: 13cm;
-        -webkit-mask-repeat: no-repeat;
+    #MTcodeResult{
+        display:none;
     }
-    #Testimg{
-        -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 0.9) 25%, rgba(0, 0, 0, 0.05) 30%);
-        -webkit-mask-size: 13cm;
-        -webkit-mask-repeat: no-repeat;
+    .catchTime{
+        display:none;
     }
-    .responseTime{
+    #continue1{
         display:none;
     }
 
 </style>
 
 <div class="consentDIV">
-    Prior to beginning this experiment, please <strong> complete an online consent form </strong><br>
+    Prior to beginning this study, <strong>please complete an online consent form </strong><br>
     by clicking on the following link. The link will open in a new tab.<br>
     <br>
-    When completing the form, you will be asked to provide your <strong> "Full Name"</strong>. <br>
-    Instead of this, please use your <strong> MTurk WorkerID</strong> for this question. <br> 
-    <br>
-    After submitting the form, please return to this tab to continue the experiment.<br>
+    After submitting the form, you will be provided with a code. Please<br>
+    return to this tab and insert the code here to continue the study.<br>
     <br>
     <a id="link" href="http://www.google.com" target="_blank">
         Consent Form.
     </a>
     <br>
     <br>
-    <strong>NOTE:</strong> If we do not recieve an online consent form with an MTurk WorkerID matching <br>
-    that of your MTurk account, <strong>your HIT will be rejected</strong> and you will not be compensated.<br>
+    Code:<input id="MTcode" name="MTcode">
+    <br>
     <br>
     <button type="button" id="consentButton" class="button">I have completed the consent form</button>
     <br>
+    <textarea rows="1" cols="1" id="MTcodeResult" name="MTcodeResult"></textarea>
 </div>
 
-<div class="intro">
-    In this experiment, you will be shown an image for 4 seconds. Most of the image will be<br>
+<div class="intro1">
+    In this study, you will be shown an image for 4 seconds. Most of the image will be<br>
     blurred except for the area around your cursor. <strong>Use your cursor to explore the image.</strong><br>
     <br>
     <br>
     <strong>This is an example of what the image will look like.</strong> Use your cursor to explore the image.<br>
     <br>
-    <img id="Testimg" class="image" onmousemove="showCoords(event)" src="https://cs.stanford.edu/people/rak248/VG_100K_2/2412007.jpg">
+    <img id="Testimg" class="image" onmousemove="showCoordsIntro(event)" src="https://cs.stanford.edu/people/rak248/VG_100K_2/2412007.jpg">
     <br>
     <br>
     After 4 seconds, the image will disappear and you will have 10 seconds to type everything<br>
@@ -151,7 +171,23 @@
     (for example: 'brown wall microwave water bottle fridge' is fine), but it should use<br>
     proper spelling when possible. <br>
     <br>
-    <button type="button" id="begin1" class="button">Begin Experiment</button>
+    <button type="button" id="begin1" class="button">Continue Instructions</button>
+    <br>
+</div>
+
+<div class="intro2">
+    Throughout this study, you will occasionally be presented with special trials where you are asked to type<br>
+    <strong>only what your cursor was last hovering over, not everything you remember about the scene.</strong><br>
+    You will recognize these trials because they will have a <strong>bright red border.</strong><br> 
+    <br>
+    <br>
+    <strong>It is very important that you respond accurately on these trials,</strong> because they ensure<br>
+    that you are paying close attention to the study.<br>
+    <br>
+    <br>
+    When you are ready to begin the study, click the button bellow.<br>
+    <br>
+    <button type="button" id="instructions2" class="button">Begin Study</button>
     <br>
 </div>
 
@@ -173,38 +209,42 @@
     <textarea rows="1" cols="1" class='coor' id="coor1" name="coor1"></textarea>
     <!-- Hidden input tracking which image was shown -->
     <textarea rows="1" cols="1" class='img_src' id="img_src1" name="img_src1"></textarea>
+    <!-- Hidden input tracking image dimensions -->
+    <textarea rows="1" cols="1" class='img_dim' id="img_dim" name="img_dim"></textarea>
     <!-- Hidden input tracking response time -->
     <textarea rows="1" cols="1" class='responseTime' id="rt1" name="rt1"></textarea>
 </div>
 
-<div id="LTtrial" class='trialDiv'>
-    <span class = instructions_LT>
-    For this portion of the experiment, you will be shown an image for two seconds and asked<br>
-    whether the image appeared previously in the experiment.<br>
-    <br>
-    If you are sure that you remember the image, select 'Sure Old'. If you are sure the image<br>
-    is new, select 'Sure New'. If you are unsure, select either 'Maybe Old' or 'Maybe New'. <br>
-    You will have 5 seconds to respond.<br>
-    </span>
-    <br>
-    <br>
-    <button type="button" id="begin2" class="button">Continue Experiment</button>
-    <img id="LTimg" class="image">
-    <br>
-    <button type="button" id="sureOld" class="LTbutton">Sure Old</button>
-    <button type="button" id="maybeOld" class="LTbutton">Maybe Old</button>
-    <button type="button" id="maybeNew" class="LTbutton">Maybe New</button>
-    <button type="button" id="sureNew" class="LTbutton">Sure New</button>
-    <br>
-    <span id='LTprogress'>Trial 1/50</span>
-    <textarea rows="1" cols="1" class='LTmem' id="LTmem1" name="LTmem1"></textarea>
-    <textarea rows="1" cols="1" class='LTmem' id="LTimg_src1" name="LTimg_src1"></textarea>
-    <textarea rows="1" cols="1" class='LTmem' id="LTrt1" name="LTrt1"></textarea>
-</div>
-
 <div id="completion" class='trialDiv'>
-    <span>You have completed this task. Please click<br>
-    the 'submit' button to submit your responses.</span>
+    You have completed this study. After reading the following debreifing<br>
+    form, please click the 'submit' button to submit your responses.<br>
+    <br>
+    <br>
+    <strong>Debriefing Statement (Study: Online Cursor Tracking!)</strong><br>
+    <br>
+    Alec Fumurescu: alecfumu@utexas.edu<br>
+    <br>
+    We hope that this experiment will help us to understand how accurately cursor-tracking can be used <br>
+    to study visual attention. <br>
+    <br>
+    This experiment consisted of a series of short-term memory tasks. We presented you with a mostly <br>
+    blurred-out image and asked you to use your cursor to explore the scene. After a brief delay, you <br>
+    were then asked to type everything that you rememberd about the scene before moving on to the next trial.<br>
+    About a third of the trials were 'catch' trials in which you were asked to type only what your cursor<br>
+    was last over. The purpose of these trials was to make sure you were looking where your cursor was pointed.<br>
+    This was a challenging task, so good job on successfully completing it!<br>
+    <br>
+    The overall purpose of this study was to test how accurately cursor-tracking can be used to measure<br>
+    visual attention. We hope to use your results to develop a cheaper and easier way to track where people<br>
+    are looking without needing to record their eyes.<br>
+    <br>
+    If you'd like to hear more about the study, please do not hesitate to contact us at the email above.<br>
+    <br>
+    <strong>Thanks for your participation!</strong><br>
+    <br>
+    <br>
+    Please click on the 'Submit' button to submit your answers.
+    <br>
 </div>
 
 <script>
@@ -239,20 +279,36 @@
       }
         return array;}
 
+    function randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);}
 
     function consentClicked(){
-        $(".consentDIV").hide();
-        $(".intro").show();
+        var inputCode = document.getElementById("MTcode").value;
+        if (inputCode == 'a7ui_i90') {
+            document.getElementById("MTcodeResult").value = "pass"
+            $(".consentDIV").hide();
+            $(".intro1").show();
+        }
+        else{
+            document.getElementById("MTcodeResult").value = "fail"
+            $(".consentDIV").hide();
+            $("#completion").show();
+        }
     }
+
+    function introInstrcutionsClicked(){
+            $(".intro1").hide();
+            $(".intro2").show();
+        }
 
     var trialNum = 1;
     var trialTime1 = 0;
-    var listUsed, listUnused, listReused, listLT, selected_image, firstHalf, secondHalf;
+    var listUsed, listUnused, listReused, listLT, selected_image, firstHalf, secondHalf,image_dimensions;
     function beginExperiment() {
         
        var timer1 = setInterval(function(){
             trialTime1 ++;
-                if (trialNum > 5) {
+                if (trialNum == 51) {
                     trialTime1 = 0;
                     clearInterval(timer1);
                     };
@@ -260,15 +316,10 @@
                     continueClicked();};
         },1000);
 
-        $('.intro').hide();
-        // Create subset of 10 from full list of image URL's
-        secondHalf = data.splice(92, 184);
-        firstHalf = data.splice(0, 92);
-        listUsed = getRandom(firstHalf, 50);
-        listUnused = getRandom(secondHalf, 25);
-        listReused = getRandom(listUsed, 25);
-        listLT = listUnused.concat(listReused);
-        listLT = shuffle(listLT);
+        $('.intro2').hide();
+        // Create subset of 50 from full list of image URL's
+        listUsed = data.slice(0, 50);
+        listUsed = shuffle(listUsed);
         // Select 1 image URL from subset of 10
         selected_image = listUsed[trialNum - 1];
         // Set 'image source' to URL of selcted image
@@ -277,29 +328,36 @@
         $('#STimg').attr("webkit-background-image", selected_image);
         // Show first image, but keep instructions, textbox, and continue button hidden
         $('#STtrial').show();
+        image_dimensions = STimg.height + ", " + STimg.width;
+        document.getElementById("img_dim").value = image_dimensions;
         $('.image').hide();
         // Opacity set to 0 instead of display:none to avoid Div size changing
         $('.instructions').css("opacity", "0");
         $('#question' + trialNum).css("opacity", "0");
-        $('#continue1').hide();
         setTimeout(function(){
         $('.image').show();
         // Hide image after 4 seconds
         setTimeout(function() {
             $('.image').hide();
+            var width = document.getElementById('STimg').width;
+            var height = document.getElementById('STimg').height;
+            document.getElementById("STimg").style.webkitMaskPosition = (.001*width) + 'px ' + (.06*height) + 'px';
         },4000);
         // Blank screen for 1 second, then show instructions, textbox, and continue button
         setTimeout(function() {
             $('.instructions').css("opacity", "1");
             $('#progress').show();
             $('#question' + trialNum).css("opacity", "1");
-            $('#continue1').show();
         },5000);
         }, 800)
     }
+
+    catch_trials_full_list = Array.from(Array(51).keys());
+    catch_trials_full_list = catch_trials_full_list.slice(2, 51);
+    catch_trials_list = getRandom(catch_trials_full_list, 16);
     function continueClicked() {
-        // Increase trial number by 1
-        document.getElementById("rt" + trialNum).value = trialTime1 - 6;
+        $("#STtrial").css("border", "2px solid gray");
+         // Increase trial number by 1
         trialNum ++;
         trialTime1 = 0;
         // Create new textbox input for trialX
@@ -329,22 +387,12 @@
         coord.cols = "1";
         coord.rows = "1";
         div.appendChild(coord);
-        // Create new (hidden) response time input for trialX
-        var div = document.getElementById("STtrial");
-        var reptime = document.createElement("textarea");
-        reptime.id = "rt" + trialNum;
-        reptime.name = "rt" + trialNum;
-        reptime.setAttribute("class", "responseTime");
-        coord.cols = "1";
-        coord.rows = "1";
-        div.appendChild(reptime);
         // Select new image from subset of 10
         selected_image = listUsed[trialNum - 1];
         // Set 'image source' to selected image
         $('.image').attr("src", selected_image);
         document.getElementById("img_src" + trialNum).value = selected_image;
         // Hide continue button, instructions, and previous trial's textbox
-        $('#continue1').hide();
         $('.instructions').css("opacity", "0");
         // Instructions used in catch trials (set on ln 182)
         $('.instructions_catch').css("display", "none");
@@ -355,123 +403,54 @@
         setTimeout(function(){
         $('.image').show();
         // Present catch trials: Show image for 2s --> hide image, show special instructions, textbox, and continue button
-        if (trialNum == 4) {
+        if (catch_trials_list.includes(trialNum)) {
+            var div = document.getElementById("STtrial");
+            var catchtime = document.createElement("textarea");
+            catchtime.id = "catchTime" + trialNum;
+            catchtime.name = "catchTime" + trialNum;
+            catchtime.setAttribute("class", "catchTime");
+            catchtime.cols = "1";
+            catchtime.rows = "1";
+            div.appendChild(catchtime);
+            var catch_trial_time = randomIntFromInterval(1500, 3500);
+            document.getElementById("catchTime" + trialNum).value = catch_trial_time;
             setTimeout(function(){
             $('.image').hide();
+            var width = document.getElementById('STimg').width;
+            var height = document.getElementById('STimg').height;
+            document.getElementById("STimg").style.webkitMaskPosition = (.001*width) + 'px ' + (.06*height) + 'px';
+            $("#STtrial").css("border", "5px solid red");
             // Display special instructions 
             $('.instructions_catch').css("display", "block")
             $('#progress').show();
             $('#question' + trialNum).css("opacity", "1");
-            $('#continue1').show();
-            }, 2000);} 
-            // End ST memory task and move on to LT memory task
-            else if (trialNum == 6) {
+            }, catch_trial_time);} 
+            // End ST memory task and move on to completion message
+            else if (trialNum == 51) {
                 $('#STtrial').hide();
                 $('.image').hide();
-                $('#LTtrial').show();
+                $('#completion').show();
             }
             else {
             // Typical (non-catch) trials: Show image for 4s --> blank for 1s --> show instructions, textbox, and continue button
             setTimeout(function(){
                 $('.image').hide();
+                var width = document.getElementById('STimg').width;
+                var height = document.getElementById('STimg').height;
+                document.getElementById("STimg").style.webkitMaskPosition = (.001*width) + 'px ' + (.06*height) + 'px';
             }, 4000);
             setTimeout(function(){
                 $('.instructions').css("opacity", "1");
                 $('#progress').show();
                 $('#question' + trialNum).css("opacity", "1");
-                $('#continue1').show();
             }, 5000);
         }}, 800)
         }
 
-        var trialTime2 = 0;
-        function continueExperiment() {
-            LTtrialNum = 1;
-            $('#begin2').hide();
-            $('.instructions_LT').hide();
-            selected_image = listLT[LTtrialNum - 1];
-            $('#LTimg').attr("src", selected_image);
-            document.getElementById("LTimg_src" + LTtrialNum).value = selected_image;
-            $('#LTimg').show();
-
-            var timer2 = setInterval(function(){
-                trialTime2 ++;
-                if (trialTime2 == 8) {
-                    document.getElementById('sureOld').click();
-                    document.getElementById('LTmem' + (LTtrialNum - 1)).value = "n/a";};
-                if (LTtrialNum > 5) {
-                    trialTime2 = 0;
-                    clearInterval(timer2);};
-                  },1000);
-
-            setTimeout(function(){
-                $('#LTimg').css("opacity", "0");
-                $('.LTbutton').show();
-                $('#LTprogress').show();
-                $('#sureOld').on('click', function(){
-                    document.getElementById('LTmem' + LTtrialNum).value = "sureOld"});
-                $('#maybeOld').on('click', function(){
-                    document.getElementById('LTmem' + LTtrialNum).value = "maybeOld"});
-                $('#maybeNew').on('click', function(){
-                    document.getElementById('LTmem' + LTtrialNum).value = "maybeNew"});
-                $('#sureNew').on('click', function(){
-                    document.getElementById('LTmem' + LTtrialNum).value = "sureNew"});
-                $('.LTbutton').on('click', function() {
-                    document.getElementById("LTrt" + LTtrialNum).value = trialTime2 - 3;
-                    LTtrialNum ++;
-                    trialTime2 = 0;
-                    if (LTtrialNum == 6) {
-                        $("#LTtrial").hide();
-                        $("#completion").show();
-                        clearInterval(timer2);
-                    }
-                    else {
-                    var div = document.getElementById("LTtrial");
-                    var res = document.createElement("textarea");
-                    res.setAttribute("class", "LTmem");
-                    res.id = "LTmem" + LTtrialNum;
-                    res.name = "LTmem" + LTtrialNum;
-                    res.cols = "1";
-                    res.rows = "1";
-                    div.appendChild(res);
-                    var div = document.getElementById("LTtrial");
-                    var LTsource = document.createElement("textarea");
-                    LTsource.setAttribute("class", "LTmem");
-                    LTsource.id = "LTimg_src" + LTtrialNum;
-                    LTsource.name = "LTimg_src" + LTtrialNum;
-                    LTsource.cols = "1";
-                    LTsource.rows = "1";
-                    div.appendChild(LTsource);
-                    var div = document.getElementById("LTtrial");
-                    var LTreptime = document.createElement("textarea");
-                    LTreptime.setAttribute("class", "LTmem");
-                    LTreptime.id = "LTrt" + LTtrialNum;
-                    LTreptime.name = "LTrt" + LTtrialNum;
-                    LTsource.cols = "1";
-                    LTsource.rows = "1";
-                    div.appendChild(LTreptime);
-                    selected_image = listLT[LTtrialNum - 1];
-                    $('#LTimg').attr("src", selected_image);
-                    document.getElementById("LTimg_src" + LTtrialNum).value = selected_image;
-                    $('.LTbutton').hide();
-                    $('#LTprogress').hide();
-                    document.getElementById("LTprogress").textContent = "Trial " + LTtrialNum + "/50";
-                    setTimeout(function() {
-                        $('#LTimg').css("opacity", "1");
-                        setTimeout(function(){
-                            $('#LTimg').css("opacity", "0");
-                            $('.LTbutton').show();
-                            $('#LTprogress').show();
-                            }, 2000)  
-                    }, 800)}
-                })
-            }, 2000);
-        }
-
     // Begin and Continue buttons
-    $('#begin1').click(beginExperiment);
+    $('#begin1').click(introInstrcutionsClicked);
+    $('#instructions2').click(beginExperiment)
     $('#continue1').click(continueClicked);
-    $('#begin2').click(continueExperiment);
     $('#consentButton').click(consentClicked);
 
     // Gather full list of image URL's from external website
@@ -493,21 +472,39 @@
 
     // Track X and Y coordinates on image (relative to how far from edges of image (offset): Top Left (0,0), Bottom Right (Max, Max))
     var x, y, coor; 
+    var stored = 0;
     function showCoords(event) {
       var x = event.offsetX;
       var y = event.offsetY;
       var coor = x + "_" + y;
-      // Append new coordinates to the hidden list, followed by a ',' and a blank space
-      document.getElementById("coor" + trialNum).value += coor + ", ";
-    var widthTest = document.getElementById('Testimg').width;
-    var heightTest = document.getElementById('Testimg').height;
+      // Find time elapsed since last mouse movement
+      var ms = event.timeStamp - stored;
+      // Append time remained at last coordinate, followed by a comma and space, and the new coordinate that was moved to
+      if (document.getElementById("coor" + trialNum).value != ""){
+       document.getElementById("coor" + trialNum).value += "(" + Math.round(ms) + ")"+ ", " + coor;
+      } 
+      // Unique case for first coordinate to in list
+      else{
+        document.getElementById("coor" + trialNum).value += coor;
+      };
+      // Update time of last mouse movement
+      stored = event.timeStamp;
+    // Keep mask centred on mouse (unique to each monitor size)
     var width = document.getElementById('STimg').width;
     var height = document.getElementById('STimg').height;
-    document.getElementById("Testimg").style.webkitMaskPosition = (x - .65*widthTest) + 'px ' + (y - .5*heightTest) + 'px';
-    document.getElementById("STimg").style.webkitMaskPosition = (x - .65*width) + 'px ' + (y - .5*height) + 'px';
+    document.getElementById("STimg").style.webkitMaskPosition = (x - 1.5*width) + 'px ' + (y - 1.5*height) + 'px';
     };
 
-    
+    function showCoordsIntro(event) {
+      var x = event.offsetX;
+      var y = event.offsetY;
+      var coor = x + "_" + y;
+    var widthTest = document.getElementById('Testimg').width;
+    var heightTest = document.getElementById('Testimg').height;
+    document.getElementById("Testimg").style.webkitMaskPosition = (x - 1.5*widthTest) + 'px ' + (y - 1.5*heightTest) + 'px';
+
+    };
+
     var MTurl, MThitID, MTassignmentID, MTworkerID;
     MTurl = document.URL;
     MThitID = MTurl.split('hitID');
@@ -519,9 +516,7 @@
     MTworkerID = MTurl.split('workerID');
     MTworkerID = MTurl.split('workerID');
     MTworkerID = MTworkerID[1];
-    document.getElementById("link").setAttribute("href", "https://redcap.prc.utexas.edu/redcap/surveys/?s=H7HXEHWKAX");
-
-
+    document.getElementById("link").setAttribute("href", "https://redcap.prc.utexas.edu/redcap/surveys/?s=MYAHRJY999");
 </script>
 
 
